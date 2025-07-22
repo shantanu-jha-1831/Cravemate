@@ -12,7 +12,7 @@ const Header = () => {
       position="static"
       elevation={0}
       sx={{
-        height: 80,
+        height: 90,
         background: 'linear-gradient(to right, #ffffff 30%, #3a7bd5)',
         borderBottom: '1px solid',
         borderColor: 'divider',

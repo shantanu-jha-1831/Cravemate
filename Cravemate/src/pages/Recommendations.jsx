@@ -1,8 +1,19 @@
 import { useState } from 'react';
-import { Container, Box, Typography, Button, CircularProgress, Grid } from '@mui/material';
+import { 
+  Container, 
+  Box, 
+  Typography, 
+  Button, 
+  CircularProgress, 
+  Grid, 
+  Paper,
+  Divider,
+  useTheme
+} from '@mui/material';
 import MoodSelector from '../components/MoodSelector';
 import QuestionForm from '../components/QuestionForm';
 import FoodCard from '../components/FoodCard';
+import { styled } from '@mui/material/styles';
 
 // Complete food database with mood associations and tags
 const foodDatabase = [
@@ -49,7 +60,7 @@ const foodDatabase = [
     price: 15.99,
     mood: 'excited',
     tags: ['fresh', 'special', 'seafood'],
-    image: '/images/sushi-platter.jpg'
+    image: '/images/sushi.jpg'
   },
   {
     id: 6,
@@ -70,11 +81,32 @@ const moodMap = {
   5: 'excited'
 };
 
+const GradientBox = styled(Box)(({ theme }) => ({
+  background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
+  color: theme.palette.primary.contrastText,
+  borderRadius: theme.shape.borderRadius,
+  padding: theme.spacing(4),
+  marginBottom: theme.spacing(4),
+  boxShadow: theme.shadows[4],
+}));
+
+const StyledPaper = styled(Paper)(({ theme }) => ({
+  padding: theme.spacing(4),
+  borderRadius: theme.shape.borderRadius * 2,
+  boxShadow: theme.shadows[2],
+  transition: 'transform 0.3s ease-in-out',
+  '&:hover': {
+    transform: 'translateY(-5px)',
+    boxShadow: theme.shadows[6],
+  },
+}));
+
 const Recommendations = () => {
   const [step, setStep] = useState(1);
   const [selectedMood, setSelectedMood] = useState(null);
   const [recommendations, setRecommendations] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const theme = useTheme();
 
   const handleMoodSelect = (moodId) => {
     setSelectedMood(moodId);
@@ -136,42 +168,94 @@ const Recommendations = () => {
   };
 
   return (
-    <Container maxWidth="md" sx={{ py: 4, minHeight: '70vh' }}>
-      <Typography variant="h4" gutterBottom sx={{ mb: 4, fontWeight: 'bold', color: 'primary.main' }}>
-        Personalized Food Recommendations
-      </Typography>
+    <Container maxWidth="lg" sx={{ py: 6 }}>
+      <GradientBox>
+        <Typography 
+          variant="h3" 
+          gutterBottom 
+          sx={{ 
+            fontWeight: 800,
+            letterSpacing: 1,
+            textAlign: 'center',
+            [theme.breakpoints.down('sm')]: {
+              fontSize: '2rem'
+            }
+          }}
+        >
+          Personalized Food Recommendations
+        </Typography>
+        <Typography 
+          variant="subtitle1" 
+          sx={{ 
+            textAlign: 'center',
+            opacity: 0.9,
+            maxWidth: 600,
+            margin: '0 auto'
+          }}
+        >
+          Discover the perfect meal to match your mood and preferences
+        </Typography>
+      </GradientBox>
 
       {step === 1 && (
-        <MoodSelector onMoodSelect={handleMoodSelect} />
+        <StyledPaper elevation={3}>
+          <Typography 
+            variant="h5" 
+            gutterBottom 
+            sx={{ 
+              mb: 4,
+              fontWeight: 600,
+              color: 'text.secondary'
+            }}
+          >
+            
+          </Typography>
+          <MoodSelector onMoodSelect={handleMoodSelect} />
+        </StyledPaper>
       )}
 
       {step === 2 && (
-        <QuestionForm onSubmit={generateRecommendations} />
+        <StyledPaper elevation={3}>
+          <QuestionForm onSubmit={generateRecommendations} />
+        </StyledPaper>
       )}
 
       {step === 3 && (
         <Box sx={{ mt: 4 }}>
           {isLoading ? (
-            <Box sx={{ 
+            <StyledPaper sx={{ 
               display: 'flex', 
               flexDirection: 'column', 
               alignItems: 'center', 
               justifyContent: 'center', 
-              height: '300px'
+              height: '300px',
+              textAlign: 'center'
             }}>
-              <CircularProgress size={60} />
-              <Typography variant="h6" sx={{ mt: 3 }}>
+              <CircularProgress size={60} thickness={4} />
+              <Typography variant="h6" sx={{ mt: 3, fontWeight: 500 }}>
                 Finding your perfect food matches...
               </Typography>
-            </Box>
+              <Typography variant="body2" sx={{ mt: 1, color: 'text.secondary' }}>
+                We're analyzing your mood and preferences
+              </Typography>
+            </StyledPaper>
           ) : (
             <>
-              <Typography variant="h5" gutterBottom sx={{ mb: 3 }}>
+              <Typography 
+                variant="h4" 
+                gutterBottom 
+                sx={{ 
+                  mb: 4,
+                  fontWeight: 700,
+                  color: 'primary.main',
+                  textAlign: 'center'
+                }}
+              >
                 {recommendations.length > 0 ? 'Recommended For You' : 'No Specific Recommendations'}
               </Typography>
               
               {recommendations.length > 0 ? (
-                <Grid container spacing={3}>
+                <Grid container spacing={4}>
                   {recommendations.map((food) => (
                     <Grid item key={food.id} xs={12} sm={6} md={4}>
                       <FoodCard food={food} />
@@ -179,34 +263,42 @@ const Recommendations = () => {
                   ))}
                 </Grid>
               ) : (
-                <Box sx={{ 
-                  textAlign: 'center', 
-                  p: 4, 
-                  border: '1px dashed', 
-                  borderColor: 'divider',
-                  borderRadius: 2
-                }}>
-                  <Typography variant="body1" sx={{ mb: 2 }}>
+                <StyledPaper sx={{ textAlign: 'center' }}>
+                  <Typography variant="h6" sx={{ mb: 2 }}>
                     Couldn't find specific matches for your criteria.
                   </Typography>
-                  <Typography variant="body1">
+                  <Typography variant="body1" sx={{ mb: 3 }}>
                     Here are some general suggestions:
                   </Typography>
-                  <Grid container spacing={3} sx={{ mt: 2 }}>
+                  <Grid container spacing={4} sx={{ mt: 2 }}>
                     {foodDatabase.slice(0, 3).map((food) => (
                       <Grid item key={food.id} xs={12} sm={6} md={4}>
                         <FoodCard food={food} />
                       </Grid>
                     ))}
                   </Grid>
-                </Box>
+                </StyledPaper>
               )}
 
-              <Box sx={{ mt: 4, textAlign: 'center' }}>
+              <Box sx={{ 
+                mt: 6, 
+                textAlign: 'center',
+                display: 'flex',
+                justifyContent: 'center',
+                gap: 2,
+                flexWrap: 'wrap'
+              }}>
                 <Button
                   variant="contained"
                   onClick={() => setStep(1)}
-                  sx={{ mr: 2, px: 4 }}
+                  sx={{ 
+                    px: 6,
+                    py: 1.5,
+                    borderRadius: 50,
+                    fontWeight: 600,
+                    textTransform: 'none',
+                    fontSize: '1rem'
+                  }}
                   size="large"
                 >
                   Start Over
@@ -214,7 +306,18 @@ const Recommendations = () => {
                 <Button
                   variant="outlined"
                   href="/menu"
-                  sx={{ px: 4 }}
+                  sx={{ 
+                    px: 6,
+                    py: 1.5,
+                    borderRadius: 50,
+                    fontWeight: 600,
+                    textTransform: 'none',
+                    fontSize: '1rem',
+                    borderWidth: 2,
+                    '&:hover': {
+                      borderWidth: 2
+                    }
+                  }}
                   size="large"
                 >
                   Browse Full Menu
@@ -224,6 +327,8 @@ const Recommendations = () => {
           )}
         </Box>
       )}
+
+      <Divider sx={{ my: 6 }} />
     </Container>
   );
 };

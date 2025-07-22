@@ -22,12 +22,7 @@ function App() {
         {/* Header */}
         <Header />
         
-        {/* Main Content */}
-        <Box component="main" sx={{
-          flexGrow: 1,
-          py: 4,
-          backgroundColor: 'background.default'
-        }}>
+        
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/menu" element={<Menu />} />
@@ -36,7 +31,7 @@ function App() {
             <Route path="/order-confirmation" element={<OrderConfirmation />} />
             <Route path="/signup" element={<Signup />} />
           </Routes>
-        </Box>
+      
         
         {/* Footer */}
         <Footer />
