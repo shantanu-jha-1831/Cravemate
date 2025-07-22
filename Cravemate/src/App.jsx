@@ -8,6 +8,7 @@ import OrderConfirmation from './pages/OrderConfirmation';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import { CartProvider } from './context/CartContext';
+import Signup from './pages/Signup';
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
             <Route path="/recommendations" element={<Recommendations />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/order-confirmation" element={<OrderConfirmation />} />
+            <Route path="/signup" element={<Signup />} />
           </Routes>
         </Box>
         
