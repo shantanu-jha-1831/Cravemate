@@ -32,6 +32,8 @@ import {
 } from '@mui/icons-material';
 import { useCart } from '../context/CartContext';
 import { motion } from 'framer-motion';
+import PeerDeliveryToggle from '../components/PeerDeliveryToggle';
+import PeerMatchingModal from '../components/PeerMatchingModal';
 
 const steps = ['Cart', 'Delivery', 'Payment', 'Confirmation'];
 
@@ -41,10 +43,15 @@ const Checkout = () => {
     cartItems,
     removeFromCart,
     updateQuantity,
-    clearCart
+    clearCart,
+    deliveryMode,
+    setDeliveryMode,
+    placeOrder,
+    peerDetails
   } = useCart();
 
   const [activeStep, setActiveStep] = useState(0);
+  const [isPeerMatching, setIsPeerMatching] = useState(false);
   const [deliveryInfo, setDeliveryInfo] = useState({
     name: '',
     phone: '',
@@ -61,7 +68,7 @@ const Checkout = () => {
 
   const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const tax = subtotal * 0.1;
-  const deliveryFee = deliveryInfo.method === 'delivery' ? 5.99 : 0;
+  const deliveryFee = deliveryInfo.method === 'delivery' ? (deliveryMode === 'peer' ? 3.99 : 5.99) : 0;
   const total = subtotal + tax + deliveryFee;
 
   const handleNext = () => {
@@ -83,15 +90,20 @@ const Checkout = () => {
   };
 
   const handlePlaceOrder = () => {
-    // In a real app, you would send the order to your backend
-    console.log('Order placed:', {
-      items: cartItems,
-      delivery: deliveryInfo,
-      payment: paymentInfo,
-      total
-    });
-    clearCart();
-    handleNext(); // Move to confirmation step
+    const orderId = placeOrder();
+    
+    if (deliveryMode === 'peer') {
+      setIsPeerMatching(true);
+      // Simulate peer matching process
+      setTimeout(() => {
+        setTimeout(() => {
+          setIsPeerMatching(false);
+          handleNext();
+        }, 2000);
+      }, 2000);
+    } else {
+      handleNext();
+    }
   };
 
   const renderCartStep = () => (
@@ -156,7 +168,10 @@ const Checkout = () => {
           <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
             <Typography>Subtotal: ${subtotal.toFixed(2)}</Typography>
             <Typography>Tax (10%): ${tax.toFixed(2)}</Typography>
-            <Typography>Delivery: ${deliveryFee.toFixed(2)}</Typography>
+            <Typography>
+              Delivery: ${deliveryFee.toFixed(2)} 
+              {deliveryMode === 'peer' && ' (Peer Delivery Discount)'}
+            </Typography>
             <Typography variant="h6" sx={{ mt: 1 }}>
               Total: ${total.toFixed(2)}
             </Typography>
@@ -171,6 +186,12 @@ const Checkout = () => {
       <Typography variant="h5" gutterBottom>
         Delivery Information
       </Typography>
+      
+      <PeerDeliveryToggle 
+        deliveryMode={deliveryMode} 
+        setDeliveryMode={setDeliveryMode}
+      />
+
       <FormControl component="fieldset" sx={{ mb: 3 }}>
         <FormLabel component="legend">Delivery Method</FormLabel>
         <RadioGroup
@@ -352,19 +373,16 @@ const Checkout = () => {
         Thank you for your order
       </Typography>
       <Typography sx={{ mb: 4 }}>
-        {deliveryInfo.method === 'delivery' 
-          ? 'Your food is being prepared and will be delivered soon.' 
-          : 'Your food is being prepared and will be ready for pickup soon.'}
-      </Typography>
-      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-        Order #{Math.floor(Math.random() * 1000000).toString().padStart(6, '0')}
+        {deliveryMode === 'peer' 
+          ? `${peerDetails?.name || 'Your peer'} will deliver your order soon!` 
+          : 'Your food is being prepared and will be delivered soon.'}
       </Typography>
       <Button
         variant="contained"
-        onClick={() => navigate('/menu')}
+        onClick={() => navigate('/order-confirmation')}
         sx={{ mt: 2 }}
       >
-        Back to Menu
+        Track Your Order
       </Button>
     </Box>
   );
@@ -417,6 +435,12 @@ const Checkout = () => {
           </Box>
         )}
       </Paper>
+
+      <PeerMatchingModal 
+        open={isPeerMatching} 
+        onClose={() => setIsPeerMatching(false)} 
+        peerName={peerDetails?.name} 
+      />
     </Container>
   );
 };

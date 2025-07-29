@@ -13,12 +13,20 @@ import {
   List,
   ListItem,
   ListItemButton,
+  ListItemIcon,
   ListItemText,
-  Divider
+  Divider,
+  alpha
 } from '@mui/material';
 import { Link } from 'react-router-dom';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import MenuIcon from '@mui/icons-material/Menu';
+import {
+  ShoppingCart,
+  Menu,
+  Search,
+  RestaurantMenu,
+  Recommend,
+  PersonAdd
+} from '@mui/icons-material';
 import { useCart } from '../context/CartContext';
 
 const Header = () => {
@@ -26,35 +34,80 @@ const Header = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const totalItems = cartItems.reduce((total, item) => total + item.quantity, 0);
 
-  const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen);
-  };
+  const handleDrawerToggle = () => setMobileOpen(!mobileOpen);
+
+  const navItems = [
+    { text: 'Menu', path: '/menu', icon: <RestaurantMenu /> },
+    { text: 'Recommendations', path: '/recommendations', icon: <Recommend /> },
+    { text: 'Sign Up', path: '/signup', icon: <PersonAdd /> },
+  ];
 
   const drawer = (
-    <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center', width: 250 }}>
-      <Typography variant="h6" sx={{ my: 2, fontWeight: 'bold', color: 'primary.main' }}>
+    <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}>
+      <Typography 
+        variant="h6" 
+        sx={{ 
+          my: 2, 
+          fontWeight: 'bold', 
+          color: 'primary.main',
+          fontSize: '1.5rem'
+        }}
+      >
         CRAVEMATE
       </Typography>
       <Divider />
       <List>
+        {navItems.map((item) => (
+          <ListItem key={item.text} disablePadding>
+            <ListItemButton 
+              component={Link} 
+              to={item.path}
+              sx={{ 
+                px: 4,
+                '&:hover': {
+                  backgroundColor: (theme) => alpha(theme.palette.primary.main, 0.1)
+                }
+              }}
+            >
+              <ListItemIcon sx={{ color: 'primary.main' }}>
+                {item.icon}
+              </ListItemIcon>
+              <ListItemText 
+                primary={item.text} 
+                primaryTypographyProps={{ fontWeight: 500 }}
+              />
+            </ListItemButton>
+          </ListItem>
+        ))}
         <ListItem disablePadding>
-          <ListItemButton component={Link} to="/menu" sx={{ textAlign: 'center' }}>
-            <ListItemText primary="Menu" />
-          </ListItemButton>
-        </ListItem>
-        <ListItem disablePadding>
-          <ListItemButton component={Link} to="/recommendations" sx={{ textAlign: 'center' }}>
-            <ListItemText primary="Recommendations" />
-          </ListItemButton>
-        </ListItem>
-        <ListItem disablePadding>
-          <ListItemButton component={Link} to="/signup" sx={{ textAlign: 'center' }}>
-            <ListItemText primary="Sign Up" />
-          </ListItemButton>
-        </ListItem>
-        <ListItem disablePadding>
-          <ListItemButton component={Link} to="/checkout" sx={{ textAlign: 'center' }}>
-            <ListItemText primary={`Cart (${totalItems})`} />
+          <ListItemButton 
+            component={Link} 
+            to="/checkout"
+            sx={{ 
+              px: 4,
+              '&:hover': {
+                backgroundColor: (theme) => alpha(theme.palette.primary.main, 0.1)
+              }
+            }}
+          >
+            <ListItemIcon sx={{ color: 'primary.main' }}>
+              <Badge 
+                badgeContent={totalItems} 
+                color="primary"
+                sx={{
+                  '& .MuiBadge-badge': {
+                    right: -5,
+                    top: 0
+                  }
+                }}
+              >
+                <ShoppingCart />
+              </Badge>
+            </ListItemIcon>
+            <ListItemText 
+              primary="Cart" 
+              primaryTypographyProps={{ fontWeight: 500 }}
+            />
           </ListItemButton>
         </ListItem>
       </List>
@@ -67,7 +120,7 @@ const Header = () => {
         position="static"
         elevation={0}
         sx={{
-          height: { xs: 70, md: 90 },
+          height: { xs: 70, md: 80 },
           background: 'linear-gradient(to right, #ffffff 30%, #3a7bd5)',
           borderBottom: '1px solid',
           borderColor: 'divider',
@@ -77,7 +130,8 @@ const Header = () => {
           height: '100%',
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'space-between'
+          justifyContent: 'space-between',
+          px: { xs: 2, sm: 3 }
         }}>
           {/* Mobile Menu Button */}
           <IconButton
@@ -91,10 +145,10 @@ const Header = () => {
               color: 'primary.main'
             }}
           >
-            <MenuIcon />
+            <Menu />
           </IconButton>
 
-          {/* Logo/Brand - Left aligned */}
+          {/* Logo/Brand */}
           <Typography 
             variant="h5"
             component={Link} 
@@ -104,14 +158,17 @@ const Header = () => {
               textDecoration: 'none',
               color: 'primary.main',
               letterSpacing: 1,
-              fontSize: { xs: '1.25rem', sm: '1.5rem' },
-              flexGrow: { xs: 1, md: 0 }
+              fontSize: { xs: '1.3rem', sm: '1.5rem' },
+              flexGrow: { xs: 1, md: 0 },
+              '&:hover': {
+                opacity: 0.9
+              }
             }}
           >
             CRAVEMATE
           </Typography>
           
-          {/* Search Box - Centered (hidden on mobile) */}
+          {/* Search Box */}
           <Box
             sx={{
               display: { xs: 'none', sm: 'flex' },
@@ -119,82 +176,53 @@ const Header = () => {
               backgroundColor: 'background.paper',
               borderRadius: 20,
               px: 2,
-              py: 0.5,
+              py: 0.8,
               width: '40%',
               maxWidth: 500,
               boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
               mx: 2
             }}
           >
+            <Search color="disabled" sx={{ mr: 1 }} />
             <InputBase
               placeholder="Search menu items..."
               sx={{
-                ml: 1,
                 flex: 1,
-                fontSize: '0.9rem'
+                fontSize: '0.95rem'
               }}
               inputProps={{ 'aria-label': 'search menu items' }}
             />
           </Box>
           
-          {/* Navigation Links - Right aligned (hidden on mobile) */}
+          {/* Desktop Navigation */}
           <Stack 
             direction="row" 
-            spacing={2}
+            spacing={1}
             sx={{
               display: { xs: 'none', md: 'flex' },
               alignItems: 'center'
             }}
           >
-            <Button 
-              component={Link}
-              to="/menu"
-              sx={{ 
-                fontSize: '1rem',
-                fontWeight: 500,
-                color: 'text.primary',
-                '&:hover': {
-                  backgroundColor: 'rgba(0,0,0,0.05)'
-                }
-              }}
-            >
-              Menu
-            </Button>
-            
-            <Button 
-              component={Link}
-              to="/recommendations"
-              sx={{ 
-                fontSize: '1rem',
-                fontWeight: 500,
-                color: 'text.primary',
-                '&:hover': {
-                  backgroundColor: 'rgba(0,0,0,0.05)'
-                }
-              }}
-            >
-              Recommendations
-            </Button>
-
-            {/* Signup Button - White text on blue background */}
-            <Button 
-              component={Link}
-              to="/signup"
-              variant="contained"
-              sx={{ 
-                fontSize: '1rem',
-                fontWeight: 600,
-                color: '#fff',
-                backgroundColor: 'transparent',
-                boxShadow: 'none',
-                '&:hover': {
-                  backgroundColor: 'rgba(255,255,255,0.1)',
-                  boxShadow: 'none'
-                }
-              }}
-            >
-              Sign Up
-            </Button>
+            {navItems.map((item) => (
+              <Button 
+                key={item.text}
+                component={Link}
+                to={item.path}
+                startIcon={item.icon}
+                sx={{ 
+                  fontSize: '0.95rem',
+                  fontWeight: 500,
+                  color: 'text.primary',
+                  textTransform: 'none',
+                  px: 2,
+                  '&:hover': {
+                    backgroundColor: (theme) => alpha(theme.palette.primary.main, 0.1)
+                  }
+                }}
+              >
+                {item.text}
+              </Button>
+            ))}
 
             {/* Cart Icon */}
             <IconButton 
@@ -203,8 +231,9 @@ const Header = () => {
               size="medium"
               sx={{ 
                 color: 'text.primary',
+                ml: 1,
                 '&:hover': {
-                  backgroundColor: 'rgba(0,0,0,0.05)'
+                  backgroundColor: (theme) => alpha(theme.palette.primary.main, 0.1)
                 }
               }}
             >
@@ -221,12 +250,12 @@ const Header = () => {
                   }
                 }}
               >
-                <ShoppingCartIcon fontSize="medium" />
+                <ShoppingCart fontSize="medium" />
               </Badge>
             </IconButton>
           </Stack>
 
-          {/* Mobile Cart Icon (visible only on mobile) */}
+          {/* Mobile Cart Icon */}
           <IconButton 
             component={Link} 
             to="/checkout"
@@ -234,8 +263,9 @@ const Header = () => {
             sx={{ 
               color: 'text.primary',
               display: { xs: 'flex', md: 'none' },
+              ml: 'auto',
               '&:hover': {
-                backgroundColor: 'rgba(0,0,0,0.05)'
+                backgroundColor: (theme) => alpha(theme.palette.primary.main, 0.1)
               }
             }}
           >
@@ -252,29 +282,30 @@ const Header = () => {
                 }
               }}
             >
-              <ShoppingCartIcon fontSize="medium" />
+              <ShoppingCart fontSize="medium" />
             </Badge>
           </IconButton>
         </Toolbar>
       </AppBar>
 
       {/* Mobile Drawer */}
-      <Box component="nav">
-        <Drawer
-          variant="temporary"
-          open={mobileOpen}
-          onClose={handleDrawerToggle}
-          ModalProps={{
-            keepMounted: true, // Better open performance on mobile.
-          }}
-          sx={{
-            display: { xs: 'block', md: 'none' },
-            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: 250 },
-          }}
-        >
-          {drawer}
-        </Drawer>
-      </Box>
+      <Drawer
+        variant="temporary"
+        open={mobileOpen}
+        onClose={handleDrawerToggle}
+        ModalProps={{ keepMounted: true }}
+        sx={{
+          display: { xs: 'block', md: 'none' },
+          '& .MuiDrawer-paper': { 
+            boxSizing: 'border-box', 
+            width: 280,
+            borderTopRightRadius: 12,
+            borderBottomRightRadius: 12
+          },
+        }}
+      >
+        {drawer}
+      </Drawer>
     </Box>
   );
 };
