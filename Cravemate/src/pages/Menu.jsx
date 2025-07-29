@@ -9,12 +9,22 @@ import {
   Tab,
   Chip,
   CircularProgress,
-  Button
+  Button,
+  Avatar,
+  Paper,
+  Divider,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Badge
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import FoodCard from '../components/FoodCard';
 import FilterListIcon from '@mui/icons-material/FilterList';
+import FoodCard from '../components/FoodCard';
+import { useCart } from '../context/CartContext';
 
+// Your original menu items (unchanged)
 const menuItems = [
   {
     id: 1,
@@ -125,15 +135,46 @@ const menuItems = [
   }
 ];
 
+// Added combo feature
+const eventCombos = [
+  {
+    id: 'birthday',
+    title: "Birthday Special",
+    description: "Perfect for celebrations",
+    icon: "🎂",
+    items: [1, 11, 12], // Margherita Pizza, Chocolate Brownie, Tiramisu
+    discount: 15 // 15% discount
+  },
+  {
+    id: 'date',
+    title: "Date Night",
+    description: "Romantic dinner for two",
+    icon: "💑",
+    items: [5, 7, 12], // Chicken Tikka Masala, Sushi Platter, Tiramisu
+    discount: 10
+  },
+  {
+    id: 'party',
+    title: "Game Night",
+    description: "Great for gatherings",
+    icon: "🎮",
+    items: [2, 4, 9], // Pepperoni Pizza, Cheeseburger, Caesar Salad
+    discount: 10
+  }
+];
+
 const categories = ['All', ...new Set(menuItems.map(item => item.category))];
 const tags = [...new Set(menuItems.flatMap(item => item.tags || []))];
 
 const Menu = () => {
+  const { addToCart } = useCart();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedTags, setSelectedTags] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
+  const [selectedCombo, setSelectedCombo] = useState(null);
+  const [comboDialogOpen, setComboDialogOpen] = useState(false);
 
   const filteredItems = menuItems.filter(item => {
     const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
@@ -149,6 +190,29 @@ const Menu = () => {
     setSelectedTags(prev => 
       prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]
     );
+  };
+
+  const getFoodById = (id) => menuItems.find(item => item.id === id);
+
+  const handleViewCombo = (combo) => {
+    setSelectedCombo(combo);
+    setComboDialogOpen(true);
+  };
+
+  const handleAddComboToCart = () => {
+    if (selectedCombo) {
+      selectedCombo.items.forEach(itemId => {
+        const foodItem = getFoodById(itemId);
+        if (foodItem) {
+          addToCart({
+            ...foodItem,
+            comboDiscount: selectedCombo.discount,
+            comboName: selectedCombo.title
+          });
+        }
+      });
+      setComboDialogOpen(false);
+    }
   };
 
   return (
@@ -171,7 +235,153 @@ const Menu = () => {
         </Button>
       </Box>
 
-      {/* Search and Filter Section */}
+      {/* Added Combo Section */}
+      <Box sx={{ mb: 4 }}>
+        <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
+          Special Combos
+        </Typography>
+        <Grid container spacing={3}>
+          {eventCombos.map((combo) => (
+            <Grid item xs={12} sm={6} md={4} key={combo.id}>
+              <Paper 
+                sx={{ 
+                  p: 3,
+                  height: '100%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  cursor: 'pointer',
+                  '&:hover': { boxShadow: 3 }
+                }}
+                onClick={() => handleViewCombo(combo)}
+              >
+                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                  <Avatar sx={{ 
+                    bgcolor: 'primary.main', 
+                    mr: 2,
+                    width: 40,
+                    height: 40
+                  }}>
+                    {combo.icon}
+                  </Avatar>
+                  <Box>
+                    <Typography variant="h6">{combo.title}</Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {combo.description}
+                    </Typography>
+                    <Badge 
+                      badgeContent={`${combo.discount}% OFF`} 
+                      color="success"
+                      sx={{ mt: 1 }}
+                    />
+                  </Box>
+                </Box>
+                <Box sx={{ mt: 2 }}>
+                  {combo.items.map(id => {
+                    const food = getFoodById(id);
+                    return (
+                      <Box key={id} sx={{ 
+                        display: 'flex', 
+                        alignItems: 'center',
+                        mb: 1,
+                        p: 1,
+                        borderRadius: 1,
+                        bgcolor: 'action.hover'
+                      }}>
+                        <Avatar 
+                          src={food.image} 
+                          variant="square"
+                          sx={{ width: 40, height: 40, mr: 2 }}
+                        />
+                        <Box>
+                          <Typography variant="body2">{food.name}</Typography>
+                          <Typography variant="caption" color="text.secondary">
+                            ${food.price}
+                          </Typography>
+                        </Box>
+                      </Box>
+                    );
+                  })}
+                </Box>
+              </Paper>
+            </Grid>
+          ))}
+        </Grid>
+        <Divider sx={{ my: 3 }} />
+      </Box>
+
+      {/* Combo Details Dialog */}
+      <Dialog open={comboDialogOpen} onClose={() => setComboDialogOpen(false)} maxWidth="sm">
+        <DialogTitle>
+          {selectedCombo?.title} - {selectedCombo?.discount}% OFF
+        </DialogTitle>
+        <DialogContent>
+          <Typography paragraph>{selectedCombo?.description}</Typography>
+          <Grid container spacing={2} sx={{ mt: 1 }}>
+            {selectedCombo?.items.map(id => {
+              const food = getFoodById(id);
+              return (
+                <Grid item xs={12} key={id}>
+                  <Box sx={{ 
+                    display: 'flex', 
+                    alignItems: 'center',
+                    p: 2,
+                    border: '1px solid #eee',
+                    borderRadius: 1
+                  }}>
+                    <Avatar 
+                      src={food.image} 
+                      variant="square"
+                      sx={{ width: 60, height: 60, mr: 2 }}
+                    />
+                    <Box sx={{ flexGrow: 1 }}>
+                      <Typography variant="subtitle1">{food.name}</Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        {food.description}
+                      </Typography>
+                    </Box>
+                    <Typography variant="body1">
+                      ${food.price.toFixed(2)}
+                    </Typography>
+                  </Box>
+                </Grid>
+              );
+            })}
+          </Grid>
+          <Box sx={{ mt: 3, textAlign: 'right' }}>
+            <Typography variant="h6">
+              Total: ${(
+                selectedCombo?.items.reduce((sum, id) => sum + (getFoodById(id)?.price || 0), 0) * 
+                (1 - selectedCombo?.discount/100)
+              ).toFixed(2)}
+              <Typography 
+                component="span" 
+                color="text.secondary" 
+                sx={{ textDecoration: 'line-through', ml: 1 }}
+              >
+                ${selectedCombo?.items.reduce((sum, id) => sum + (getFoodById(id)?.price || 0), 0).toFixed(2)}
+              </Typography>
+            </Typography>
+            <Typography variant="caption" color="success.main">
+              You save ${(
+                selectedCombo?.items.reduce((sum, id) => sum + (getFoodById(id)?.price || 0), 0) * 
+                (selectedCombo?.discount/100)
+              ).toFixed(2)}
+            </Typography>
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setComboDialogOpen(false)}>Cancel</Button>
+          <Button 
+            variant="contained" 
+            onClick={handleAddComboToCart}
+            color="primary"
+          >
+            Add Combo to Cart
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Original Menu Filtering and Display */}
       <Box sx={{ mb: 4 }}>
         <TextField
           fullWidth
@@ -244,7 +454,6 @@ const Menu = () => {
         )}
       </Box>
 
-      {/* Menu Items */}
       {isLoading ? (
         <Box sx={{ display: 'flex', justifyContent: 'center', my: 10 }}>
           <CircularProgress size={60} />
