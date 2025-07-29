@@ -9,6 +9,7 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import { CartProvider } from './context/CartContext';
 import Signup from './pages/Signup';
+import DeliveryPartner from './pages/DeliveryPartner';
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/order-confirmation" element={<OrderConfirmation />} />
             <Route path="/signup" element={<Signup />} />
+             <Route path="/delPart" element={<DeliveryPartner />} />
           </Routes>
       
         

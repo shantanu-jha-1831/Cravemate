@@ -25,7 +25,8 @@ import {
   Search,
   RestaurantMenu,
   Recommend,
-  PersonAdd
+  PersonAdd,
+  DeliveryDining
 } from '@mui/icons-material';
 import { useCart } from '../context/CartContext';
 
@@ -40,6 +41,7 @@ const Header = () => {
     { text: 'Menu', path: '/menu', icon: <RestaurantMenu /> },
     { text: 'Recommendations', path: '/recommendations', icon: <Recommend /> },
     { text: 'Sign Up', path: '/signup', icon: <PersonAdd /> },
+    { text: 'Delivery Partner', path: '/delPart', icon: <DeliveryDining /> },
   ];
 
   const drawer = (

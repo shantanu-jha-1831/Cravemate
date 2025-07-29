@@ -55,9 +55,9 @@ export const CartProvider = ({ children }) => {
   // Assign a peer for delivery (mock function)
   const assignPeer = () => {
     const peers = [
-      { name: 'John D.', distance: '0.3 miles', rating: '4.8' },
-      { name: 'Sarah M.', distance: '0.5 miles', rating: '4.9' },
-      { name: 'Alex T.', distance: '0.7 miles', rating: '4.7' }
+      { name: 'Vartika Jaiswal.', distance: '0.3 miles', rating: '4.8' },
+      { name: 'Vartika Jaiswal', distance: '0.5 miles', rating: '4.9' },
+      { name: 'Vartika Jaiswal', distance: '0.7 miles', rating: '4.7' }
     ];
     const randomPeer = peers[Math.floor(Math.random() * peers.length)];
     setPeerDetails(randomPeer);

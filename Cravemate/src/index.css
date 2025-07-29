@@ -204,3 +204,349 @@ body.dark-mode .MuiPaper-root {
     border-color 0.3s ease !important;
 }
 
+/* Delivery Partner Dashboard - Full CSS */
+.delivery-dashboard {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  padding: 2rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.dashboard-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Header Styles */
+.dashboard-header {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+}
+
+@media (min-width: 768px) {
+  .dashboard-header {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+.dashboard-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 1rem;
+}
+
+.header-actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* Status Bubble */
+.status-bubble {
+  padding: 0.5rem 1rem;
+  border-radius: 2rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.status-bubble.available {
+  background-color: #e6f7ee;
+  color: #28a745;
+}
+
+.status-bubble.unavailable {
+  background-color: #fde8e8;
+  color: #dc3545;
+}
+
+/* Toggle Availability Button */
+.toggle-availability {
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 2rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.toggle-availability.online {
+  background-color: #28a745;
+  color: white;
+}
+
+.toggle-availability.offline {
+  background-color: #dc3545;
+  color: white;
+}
+
+.toggle-availability:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.toggle-availability:active {
+  transform: translateY(0);
+}
+
+/* Main Site Link */
+.main-site-link {
+  padding: 0.6rem 1.2rem;
+  background-color: #e9ecef;
+  color: #495057;
+  border-radius: 2rem;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.main-site-link:hover {
+  background-color: #dee2e6;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* Stats Grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.stat-card {
+  background: white;
+  border-radius: 0.8rem;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  transition: transform 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+}
+
+.stat-card h3 {
+  color: #6c757d;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.stat-card p {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.stat-card.pending p {
+  color: #007bff;
+}
+
+.stat-card.completed p {
+  color: #28a745;
+}
+
+.stat-card.earnings p {
+  color: #6f42c1;
+}
+
+/* Orders Table */
+.orders-container {
+  background: white;
+  border-radius: 0.8rem;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+
+.orders-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.orders-table th {
+  background-color: #f8f9fa;
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #495057;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.5px;
+}
+
+.orders-table td {
+  padding: 1.2rem 1rem;
+  border-top: 1px solid #e9ecef;
+  vertical-align: top;
+}
+
+.orders-table tr:hover {
+  background-color: #f8f9fa;
+}
+
+/* Table Cells */
+.order-id {
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.customer {
+  font-weight: 500;
+}
+
+.items ul {
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+.items li {
+  margin-bottom: 0.3rem;
+}
+
+.address {
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+.amount {
+  font-weight: 600;
+}
+
+/* Status Badges */
+.status-badge {
+  display: inline-block;
+  padding: 0.4rem 0.8rem;
+  border-radius: 2rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.status-badge.ready {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.status-badge.assigned {
+  background-color: #cce5ff;
+  color: #004085;
+}
+
+.status-badge.preparing {
+  background-color: #ffe8cc;
+  color: #804d00;
+}
+
+/* Action Buttons */
+.actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 0.4rem;
+  font-weight: 600;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.accept-btn {
+  background-color: #28a745;
+  color: white;
+}
+
+.accept-btn:hover {
+  background-color: #218838;
+}
+
+.complete-btn {
+  background-color: #17a2b8;
+  color: white;
+}
+
+.complete-btn:hover {
+  background-color: #138496;
+}
+
+.details-btn {
+  background-color: #6c757d;
+  color: white;
+}
+
+.details-btn:hover {
+  background-color: #5a6268;
+}
+
+/* Map Section */
+.map-section {
+  background: white;
+  border-radius: 0.8rem;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+.map-section h2 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: #2c3e50;
+}
+
+.map-placeholder {
+  background-color: #e9ecef;
+  height: 300px;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6c757d;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .dashboard-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .header-actions {
+    margin-top: 1rem;
+  }
+  
+  .orders-table {
+    display: block;
+    overflow-x: auto;
+  }
+}
